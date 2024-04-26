@@ -5,6 +5,10 @@ from django.contrib.auth.models import User
 class Category(models.Model):
     name = models.CharField(max_length=255)
 
+    class Meta:
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
+
     def __str__(self):
         return self.name
 
@@ -14,6 +18,16 @@ class Quiz(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
     date_published = models.DateTimeField(auto_now_add=True)
+
+    def upload_to(self, filename):
+        filename = '_'.join(filename.split())
+        return f'quiz/{self.category}/{self.title}/{filename}'
+
+    image = models.ImageField(upload_to=upload_to, blank=True)
+
+    class Meta:
+        verbose_name = 'Quiz'
+        verbose_name_plural = 'Quizzes'
 
     def __str__(self):
         return self.title
@@ -43,15 +57,7 @@ class Question(models.Model):
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=255)
+    is_correct = models.BooleanField(default=False)
 
     def __str__(self):
         return self.choice_text
-
-
-class Answer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.user.username}'s answer to {self.question.question_text}: {self.choice.choice_text}"
