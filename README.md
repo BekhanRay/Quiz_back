@@ -9,7 +9,7 @@ this method match you if you have Windows with downloaded Docker engine
 If you were not downloaded yet i beg to get it.
 Also command for admin creation (only if you lounched app via docker-compose) :
 ```
- docker exec -it backend python3 manage.py createsuperuser
+ docker exec -it quiz_back python3 manage.py createsuperuser
 ```
 and put your data
 
