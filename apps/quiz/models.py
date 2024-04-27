@@ -1,29 +1,15 @@
 from django.db import models
-from django.contrib.auth.models import User
-
-
-class Category(models.Model):
-    name = models.CharField(max_length=255)
-
-    class Meta:
-        verbose_name = 'Category'
-        verbose_name_plural = 'Categories'
-
-    def __str__(self):
-        return self.name
-
+from apps.users.models import User
 
 class Quiz(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
     description = models.TextField()
     date_published = models.DateTimeField(auto_now_add=True)
 
     def upload_to(self, filename):
-        filename = '_'.join(filename.split())
-        return f'quiz/{self.category}/{self.title}/{filename}'
+        return f'{self.title}/{filename}'
 
-    image = models.ImageField(upload_to=upload_to, blank=True)
+    image = models.ImageField(upload_to=upload_to, blank=True, null=True)
 
     class Meta:
         verbose_name = 'Quiz'
@@ -53,11 +39,24 @@ class Question(models.Model):
     def __str__(self):
         return self.question_text
 
+    def get_next_question(self):
+        next_question = Question.objects.filter(quiz=self.quiz, id__gt=self.id).order_by('id').first()
+        return next_question
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=255)
     is_correct = models.BooleanField(default=False)
+    answered = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return self.choice_text
+
+
+class Result(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    score = models.FloatField(max_length=100)
+    total_questions = models.IntegerField()
+    date = models.DateTimeField(auto_now_add=True)

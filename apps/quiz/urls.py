@@ -1,9 +1,14 @@
 # urls.py
 
 from django.urls import path
-from .views import QuizList, QuizDetail
+from apps.quiz import views
+
 
 urlpatterns = [
-    path('quiz/', QuizList, name='quiz_list'),
-    path('quiz/<int:quiz_id>/', QuizDetail, name='quiz_detail'),
+    path('', views.quiz_list, name='quiz_list'),
+    path('<int:quiz_id>/', views.quiz_detail, name='quiz_detail'),
+    path('<int:quiz_id>/attempt/', views.quiz_attempt, name='quiz_attempt'),
+    path('results/', views.result_list, name='result_list'),
+    path('<int:quiz_id>/result/', views.result_detail, name='result_detail')
 ]
+
