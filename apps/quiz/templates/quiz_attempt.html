@@ -1,17 +1,47 @@
 {% extends 'base.html' %}
-{% block title %} Result {% endblock %}
+{% block title %} {{ quiz.title }} {% endblock %}
 {% block body %}
     <h1>{{ quiz.title }}</h1>
-    <form method="post">
+    <form method="post" id="quiz-form">
         {% csrf_token %}
-        {% for question in quiz.question_set.all %}
-            <h2>{{ question.question_text }}</h2>
-            {% for choice in question.choice_set.all %}
-                <input type="radio" name="question{{ question.id }}" value="{{ choice.id }}">
-                {{ choice.choice_text }}
+        <div id="quiz-questions">
+            {% for question in quiz.question_set.all %}
+                <div class="question" id="question{{ question.id }}" style="display: none;">
+                    <h2>{{ question.question_text }}</h2>
+                    {% for choice in question.choice_set.all %}
+                        <input type="radio" name="question{{ question.id }}" value="{{ choice.id }}">
+                        {{ choice.choice_text }}
+                        <br>
+                    {% endfor %}
+                </div>
             {% endfor %}
-        {% endfor %}
+        </div>
         <br>
-            <a href="{% url 'result_detail' quiz.id %}"><button type="button">Submit</button></a>
+        {% if quiz.get_total_questions > 1%}
+        <button type="button" id="next-btn">Next</button>
+        {% endif %}
+        <button type="submit">Submit</button>
     </form>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var currentQuestion = 1;
+            var totalQuestions = {{ quiz.question_set.count }};
+            $(".question").hide();
+            $("#question1").show();
+
+            $("#next-btn").click(function() {
+                $("#question" + currentQuestion).hide();
+                currentQuestion++;
+                if (currentQuestion <= totalQuestions) {
+                    $("#question" + currentQuestion).show();
+                }
+                if (currentQuestion === totalQuestions) {
+                    $("#next-btn").hide();
+                    $("#submit-btn").show();
+                }
+            });
+        });
+    </script>
 {% endblock %}

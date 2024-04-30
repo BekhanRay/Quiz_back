@@ -5,7 +5,7 @@ from apps.users.models import User
 
 
 class UserCreationForm(BaseUserCreationForm):
-    # username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username'}), label='Username', required=True)
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Enter password'}))
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Confirm password'}))
 

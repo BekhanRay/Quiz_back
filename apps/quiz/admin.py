@@ -1,6 +1,7 @@
 
 from django.contrib import admin
-from .models import Choice, Quiz, Question
+from .forms import ResultsForm
+from .models import Choice, Quiz, Question, Result
 
 
 class ChoiceInline(admin.TabularInline):
@@ -29,3 +30,9 @@ class QuizAdmin(admin.ModelAdmin):
         readonly_fields = ('date_published',)
 
 
+# admin.site.register(Result)
+@admin.register(Result)
+class ResultAdmin(admin.ModelAdmin):
+    form = ResultsForm
+    list_display = ('user', 'quiz', 'score', 'total_questions', 'date',)
+    list_filter = ('user', 'quiz', 'score',)
