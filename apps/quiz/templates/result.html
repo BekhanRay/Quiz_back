@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %} Quiz {% endblock %}
+{% block body %}
+    <h1>Results</h1>
+    <ul>
+        Total questions : {{ result.total_questions }}
+        <br>
+        {{ result.right_answers }} / {{ result.total_questions }}
+        <br>
+        {{ result.score }}%
+    </ul>
+{% endblock %}
